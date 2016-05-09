@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(activity_template)
+project(visual_classification)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  genmsg
   actionlib
   actionlib_msgs
+  genmsg
+  message_generation
+  rospy
+  sensor_msgs
   std_msgs
 )
 
@@ -60,16 +63,19 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate actions in the 'action' folder
 add_action_files(
-  FILES
-#  ActivityExample.action
-  VisualClassification.action
+   FILES
+   VisualClassification.action
+#   Action1.action
+#   Action2.action
 )
 
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  std_msgs  # Or other packages containing msgs
+  sensor_msgs
+  std_msgs
   actionlib_msgs
+#   actionlib_msgs#   sensor_msgs#   std_msgs
 )
 
 ################################################
@@ -103,8 +109,8 @@ generate_messages(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES activity_template
-#  CATKIN_DEPENDS actionlib
+#  LIBRARIES visual_classification
+#  CATKIN_DEPENDS actionlib actionlib_msgs genmsg message_generation rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
 )
 
@@ -120,24 +126,24 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(activity_template
-#   src/${PROJECT_NAME}/activity_template.cpp
+# add_library(visual_classification
+#   src/${PROJECT_NAME}/visual_classification.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(activity_template ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(visual_classification ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(activity_template_node src/activity_template_node.cpp)
+# add_executable(visual_classification_node src/visual_classification_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(activity_template_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(visual_classification_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(activity_template_node
+# target_link_libraries(visual_classification_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -156,7 +162,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS activity_template activity_template_node
+# install(TARGETS visual_classification visual_classification_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -181,7 +187,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_activity_template.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_visual_classification.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

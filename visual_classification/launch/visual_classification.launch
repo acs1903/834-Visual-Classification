@@ -2,7 +2,7 @@
 
 <launch>
 
-    <!-- Start up the activity_server_template.py file  -->
+    <!-- Start up the visual_classification_server.py file  -->
     <node name="visual_classification_server" pkg="visual_classification" type="visual_classification_server.py" output="screen">
     </node>
 
