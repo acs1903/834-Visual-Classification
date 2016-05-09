@@ -5,6 +5,7 @@ import actionlib
 import numpy as np
 import cv2
 
+from visual_classification.classifier import cnn
 from sensor_msgs.msg import CompressedImage
 from visual_classification.msg import VisualClassificationAction, VisualClassificationGoal, VisualClassificationResult, VisualClassificationFeedback
 
@@ -32,6 +33,7 @@ class VisualClassificationActivity(object):
         image = self.image_data
         np_arr = np.fromstring(image, np.uint8)
         image_np = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
+        print image_np.shape
 
         feedback = VisualClassificationFeedback()
         feedback.current_step = "finished converting from CompressedImage to Numpy Array"
@@ -42,7 +44,7 @@ class VisualClassificationActivity(object):
         self.action_server.publish_feedback(feedback)
 
         # Before you exit, be sure to succeed or fail.
-        classification = cnn_function(image_format) ##TO DO: FIGURE THIS OUT
+        classification = cnn(image_np) ##TO DO: FIGURE THIS OUT
         result = VisualClassificationResult()
         result.output = classification #"I'm done!" # Put your output here
         self.action_server.set_succeeded(result)
