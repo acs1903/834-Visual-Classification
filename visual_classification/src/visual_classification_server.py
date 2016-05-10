@@ -34,7 +34,14 @@ class VisualClassificationActivity(object):
         np_arr = np.fromstring(image, np.uint8)
         image_np = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
         #print image_np.shape #(576, 704, 3)
+
+        #get into tensorflow format
         image = tf.image.resize_images(image_np, 32, 32, method=1, align_corners=False)
+        r = image[:,:,0].flatten()
+        g = image[:,:,1].flatten()
+        b = image[:,:,2].flatten()
+        label = -1
+        out = np.array(list(label) + list(r) + list(g) + list(b),np.uint8)
 
         feedback = VisualClassificationFeedback()
         feedback.current_step = "finished converting from CompressedImage to Numpy Array"
