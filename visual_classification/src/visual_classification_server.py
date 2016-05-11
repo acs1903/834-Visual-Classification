@@ -3,12 +3,15 @@
 import rospy
 import actionlib
 import numpy as np
+import scipy.misc
+from PIL import Image
 import cv2
 import tensorflow as tf
-
-from classifier.classifier import cnn
+from inception import main
 from sensor_msgs.msg import CompressedImage
 from visual_classification.msg import VisualClassificationAction, VisualClassificationGoal, VisualClassificationResult, VisualClassificationFeedback
+
+IMAGE_PATH =
 
 class VisualClassificationActivity(object):
     def __init__(self, activity_name='visual_classification'):
@@ -22,7 +25,6 @@ class VisualClassificationActivity(object):
         self.image_data = image.data
 
     def execute_action(self, goal):
-        # YOUR CODE HERE! Replace this method.
         rospy.loginfo("Action called with input: {}".format(goal.input))
 
         # This is how you can send feedback to the client
@@ -33,15 +35,9 @@ class VisualClassificationActivity(object):
         image = self.image_data
         np_arr = np.fromstring(image, np.uint8)
         image_np = cv2.imdecode(np_arr, cv2.CV_LOAD_IMAGE_COLOR)
-        #print image_np.shape #(576, 704, 3)
+        image = Image.fromarray(image_np)
+        image.save('/home/cognitiverobotics/catkin_ws/src/cognitiverobotics/student_code/visual_classification/scratch/test_image.jpg')
 
-        #get into tensorflow format
-        image = tf.image.resize_images(image_np, 32, 32, method=1, align_corners=False)
-        r = image[:,:,0].flatten()
-        g = image[:,:,1].flatten()
-        b = image[:,:,2].flatten()
-        label = -1
-        out = np.array(list(label) + list(r) + list(g) + list(b),np.uint8)
 
         feedback = VisualClassificationFeedback()
         feedback.current_step = "finished converting from CompressedImage to Numpy Array"
@@ -52,8 +48,36 @@ class VisualClassificationActivity(object):
         self.action_server.publish_feedback(feedback)
 
         # Before you exit, be sure to succeed or fail.
-        #image = "A"
-        classification = cnn(image) ##TO DO: FIGURE THIS OUT
+        classification_list = main()
+        top_result = classification_list[0]
+
+        dog_list = [ 'dalmatian' , 'coach dog', 'carriage dog', 'Newfoundland', 'Newfoundland dog', 'Eskimo dog', 'husky',
+                    'African hunting dog', 'hyena dog', 'Cape hunting dog', 'Lycaon pictus',
+                    'German shepherd', 'German shepherd dog', 'German police dog', 'alsatian',
+                    'dogsled', 'dog sled', 'dog sleigh', 'Old English sheepdog', 'bobtail', 'French bulldog',
+                    'Bernese mountain dog', 'Maltese dog', 'Maltese terrier', 'Maltese', 'Greater Swiss Mountain dog',
+                    'affenpinscher', 'monkey pinscher', 'monkey dog', 'pug', 'pug-dog', 'Tibetan terrier', 'chrysanthemum dog',
+                    'Shetland sheepdog', 'Shetland sheep dog', 'Shetland', 'terrier' , 'dog' , 'Chihuahua']
+
+        truck_list = ['tank', 'army tank', 'armored combat vehicle', 'armoured combat vehicle', 'fire engine', 'fire truck', 'garbage truck', 'dustcart', 'pickup', 'pickup truck', 'tow truck', 'tow car', 'wrecker', 'trailer truck', 'tractor trailer', 'trucking rig', 'rig', 'articulated lorry', 'recreational vehicle', 'RV', 'R.V.', 'tractor']
+
+        car_list = ["jeep, landrover", "limousine, limo", "minivan","Model T","racer, race car, racing car" , "sports car, sport car", "convertible", "cab, hack, taxi, taxicab","ambulance","beach wagon, station wagon, wagon, estate car, beach waggon, station waggon, waggon"]
+
+        airplane_list = ["airliner", "warplane, military plane", "airship, dirigible", "balloon", "space shuttle"]
+
+
+        if 'dog' in top_result:
+            classification = 'dog'
+        elif 'terrier' in top_result:
+            classification = 'dog'
+        elif top_result in any([x for x in x in dog_list]):
+            classification = 'dog'
+        elif top_result in any([x for x in x in car_list]):
+            classification = 'car'
+        elif top_result in ([x for x in x in airplane_list]):
+            classification = 'airplane'
+        elif top_result in ([x for x in x in truck_list]):
+            classification = 'truck'
         result = VisualClassificationResult()
         result.output = classification #"I'm done!" # Put your output here
         self.action_server.set_succeeded(result)
