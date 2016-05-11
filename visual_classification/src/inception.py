@@ -182,7 +182,7 @@ def run_inference_on_image(image):
       score = predictions[node_id]
       print('%s (score = %.5f)' % (human_string, score))
       category_list.append(human_string)
-      return category_list
+    return category_list
 
 
 def maybe_download_and_extract():
@@ -210,6 +210,7 @@ def main(_):
            os.path.join(FLAGS.model_dir, 'cropped_panda.jpg'))
 #  image = 'cat.jpg'
   image = '/home/cognitiverobotics/catkin_ws/src/cognitiverobotics/student_code/visual_classification/scratch/test_image.jpg'
+  #image = '/home/student/Desktop/test_image.jpg'
   return run_inference_on_image(image)
 
 
